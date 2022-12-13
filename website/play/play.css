@@ -1,0 +1,334 @@
+html,body {
+    margin: 0;
+}
+
+.screen {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.waitingHeader {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 150px;
+    width: 100%;
+    text-align: center;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+.waitingHeader > h1 {
+    font-size: 2rem;
+    margin: 0;
+}
+
+.timerContainer {
+    position: absolute;
+    width: 120px;
+    height: 130px;
+    text-align: center;
+    top: calc(50% - 60px);
+    left: calc(50% - 65px);
+}
+
+#timeLeft {
+    margin: 0;
+    font-size: 5rem;
+}
+
+.timerContainer>p {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+#makeMemeScreen {
+    display: grid;
+    grid-template-areas: 
+    "header header header"
+    "leftSide split rightSide";
+    grid-template-rows: 100px 1fr;
+    grid-template-columns: 1fr 20px 1fr;
+}
+
+#leftSide {
+    grid-area: leftSide;
+}
+
+#leftSide>* {
+    margin: auto;
+}
+
+#leftSide>h2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#rightSide {
+    grid-area: rightSide;
+    position: relative;
+}
+
+.memeImageContainer {
+    width: fit-content;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.memeImage {
+    max-width: 450px;
+    height: 450px;
+    overflow: hidden;
+    object-fit: cover;
+    border-radius: 5px;
+    margin: auto;
+}
+
+.memeTextContainer {
+    position: absolute;
+}
+
+.memeTextContainer > h3 {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+  color:white;
+  text-shadow: -1px 1px 0 #000,
+				  1px 1px 0 #000,
+				 1px -1px 0 #000,
+				-1px -1px 0 #000;
+}
+
+.switchMeme {
+    display: flex;
+    cursor: pointer;
+}
+
+.switchMeme > p {
+    margin: 7px 0;
+}
+
+.switchMeme > img {
+    width: 30px;
+    height: 30px;
+}
+
+.textAreaInp {
+    width: 400px;
+    height: 40px;
+    border-style: solid;
+    border-radius: 10px;
+    box-sizing: border-box;
+    outline: none;
+    padding-inline: 10px;
+    margin-top: 20px;
+    display: block;
+}
+
+.submitButton {
+    position: absolute;
+    right: 100px;
+    bottom: 50px;
+    width: 150px;
+    height: 50px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border-width: 1px;
+    cursor: pointer;
+}
+
+.header {
+    grid-area: header;
+}
+
+.memeTimeContainer {
+    margin-left: auto;
+    margin-right: 50px;
+    width: fit-content;
+    display: flex;
+}
+
+#rateMemeScreen {
+    display: grid;
+    grid-template-areas: 
+    "header header header"
+    "memeBuddy memeArea timeLeft"
+    "rateArea rateArea rateArea";
+    grid-template-rows: 150px 1fr 100px;
+    grid-template-columns: 250px 1fr 250px;
+}
+
+#memeArea {
+    grid-area: memeArea;
+}
+
+#rateMemeImageContainer {
+    margin: auto;
+}
+
+#rateArea {
+    grid-area: rateArea;
+    display: flex;
+    place-content: center;
+}
+
+.outerButton {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    margin-inline: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.outerButton > img {
+    width: 30px;
+    height: 25px;
+}
+
+#mehButton {
+    border-radius: 20px;
+    width: 100px;
+    height: 45px;
+    margin-top: 7.5px;
+    border: none;
+    text-align: center;
+    cursor: pointer;
+}
+
+#mehButton > h2 {
+    margin: 5px 0;
+}
+
+#arrowUp {
+    background-color: rgb(230, 57, 70);
+}
+
+#arrowDown {
+    background-color: rgb(69, 123, 157);
+}
+
+#arrowDown > img {
+    transform: rotate(180deg);
+}
+
+#recapScreen {
+    display: grid;
+    grid-template-areas:
+    "header header"
+    "rankedMemes leaderboard";
+    grid-template-rows: 100px 1fr;
+    grid-template-columns: 1fr 400px;
+}
+
+#leaderboard {
+    grid-area: leaderboard;
+    width: 350px;
+    margin: 25px;
+    padding: 25px;
+    height: fit-content;
+    background-color: white;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+#leaderboard > h2 {
+    margin: 0;
+}
+
+.leaderboardItem {
+    display: flex;
+}
+
+.leaderboardItem>* {
+    margin-bottom: 0;
+}
+
+.leaderboardItem>*:nth-child(2) {
+    margin-left: auto;
+}
+
+#rankedMemes {
+    grid-area: rankedMemes;
+}
+
+.rankedMemesItem {
+    width: min-content;
+    height: min-content;
+    margin-left: auto;
+    margin-right: 10%;
+    margin-top: 20px;
+}
+
+.rankedMemesItem img {
+    border-radius: 5px 5px 0 0 !important;
+}
+
+.underImageDiv {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    margin: 0;
+    background-color: white;
+    border-radius: 0 0 5px 5px;
+    margin-top: -24px;
+    box-sizing: border-box;
+    padding: 15px;
+}
+.underImageDiv > h3 {
+    margin: 0;
+    width: fit-content;
+}
+
+.underImageDiv>h3:last-child {
+    margin-left: auto;
+}
+
+#endScreen {
+    display: grid;
+    grid-template-areas: 
+    "header"
+    "endLeaderboard"
+    "topMemes";
+    grid-template-rows: 100px 1fr 1fr;
+}
+
+#endLeaderboard {
+    grid-area: endLeaderboard;
+}
+
+#endLeaderboard >li {
+    display: flex;
+}
+
+#endLeaderboard > li > p:last-child {
+    margin-left: auto;
+}
+
+#players {
+    width: 400px;
+    margin: auto;
+    list-style-type: none;
+}
+
+#players>li {
+    background-color: rgb(27, 62, 111);
+    padding: 5px;
+}
+
+#players>li:nth-child(even) {
+    background-color: rgb(37, 72, 121);
+}
+
+#players>li:first-child {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+#players>li:last-child {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="static/std/std.css">
+    <link rel="stylesheet" href="static/dashboard/dashboard.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="static/std/std.js"></script>
+    <script src="static/dashboard/dashboard.js"></script>
+</head>
+
+<body>
+    <div class="header">
+        <h2 class="uploadIt">upload it</h2>
+        <h1 class="meme">meme</h1>
+    </div>
+    <div class="username">
+        <input type="text" placeholder="username" id="username" autocomplete="off">
+    </div>
+    <div class="lobbyDiv">
+        <div>
+            <input type="text" placeholder="TYPE CODE" maxlength="5" onkeydown="return /[a-zA-Z0-9]/i.test(event.key)"
+                id="codeInput" autocomplete="off">
+            <button onclick="joinLobbyByCode()">join</button>
+        </div>
+        <button onclick="createPrivateLobby()" class="privateLobby">CREATE LOBBY</button>
+    </div>
+    <div class="uploadMemeBtn">
+        <a href="/memes">
+            <p>Upload memes!</p>
+        </a>
+    </div>
+</body>
+
+</html>

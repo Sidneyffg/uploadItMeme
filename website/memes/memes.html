@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memes</title>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="static/std/std.css">
+    <link rel="stylesheet" href="static/memes/memes.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="static/std/std.js"></script>
+    <script src="static/memes/memes.js" defer></script>
+</head>
+
+<body>
+    <div class="header">
+        <h2 class="uploadIt">upload it</h2>
+        <h1 class="meme">meme</h1>
+    </div>
+
+    <div id="memeGroup" style="display:none;">
+        <h1 id="groupName"></h1>
+        <div class="memeCountContainer">
+            <p id="memeCount"></p>
+            <input type="file" accept=".png, .jpg, .jpeg, .webp, .gif" onchange="loadFile()" id="file"
+                style="display: none;">
+            <label for="file" class="fileUploadBtn">Upload meme!</label>
+        </div>
+        <div class="line"></div>
+
+        <div class="memes" id="memes">
+
+        </div>
+
+        <div class="shadow" id="shadow" style="display: none;" onclick="closeEditMeme()"></div>
+        <div class="editMemecontainer" id="editMemecontainer" style="display: none;">
+            <div>
+                <div class="leftSide" id="leftSide">
+                    <h3>meme</h3>
+                    <div id="imageContainer">
+                        <img id="editableMeme"
+                            alt="There should be an image here. If you're seeing this, refresh the page...">
+                    </div>
+                    <button id="save" onclick="saveMeme()">Save</button>
+                </div>
+                <div class="rightSide" id="rightSide">
+                    <h3>Text areas</h3>
+                    <button id="newTextArea" onclick="addTextArea()">Create new text area.</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loginField" id="loginField">
+        <h2 id="loginHeader">Login to your memes:</h2>
+        <input type="text" placeholder="Group name" id="groupNameIpt">
+        <input type="password" placeholder="Password" id="groupPasswordIpt">
+        <div class="buttons">
+            <button id="createGroupBtn">Create group</button>
+            <button id="loginBtn">Login</button>
+        </div>
+    </div>
+</body>
+
+</html>

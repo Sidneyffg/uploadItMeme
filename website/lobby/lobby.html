@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lobby</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="static/std/std.css">
+    <link rel="stylesheet" href="static/lobby/lobby.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="static/std/std.js"></script>
+    <script src="static/lobby/lobby.js" defer></script>
+</head>
+
+<body>
+    <div class="header">
+
+    </div>
+    <div class="mainDiv">
+        <div class="playerList">
+            <h2 id="playerCount">1 Player</h2>
+            <ul class="players" id="players">
+
+            </ul>
+        </div>
+        <div class="settingsTab">
+            <h2>Settings</h2>
+            <div id="memeGroupContainer" style="display: none;">
+                <h3>Add meme group...</h3>
+                <input type="text" id="memeGroupName" placeholder="Group name">
+                <input type="password" id="memeGroupPassword" placeholder="Password">
+                <button onclick="addMemeGroup()">comfirm</button>
+            </div>
+            <div class="lobbyId">
+                <div>
+                    <h2 id="lobbyId"></h2>
+                </div>
+                <button onclick="copyLobbyId()">copy</button>
+            </div>
+        </div>
+    </div>
+    <div id="startGame" onclick="startGame()" style="display: none;">
+        <h2>START GAME</h2>
+    </div>
+</body>
+
+</html>

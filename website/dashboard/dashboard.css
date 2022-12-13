@@ -1,0 +1,103 @@
+.header {
+    text-align: center;
+}
+
+.username {
+    margin: auto;
+    width: fit-content;
+    margin-bottom: 20px;
+}
+
+.username>input {
+    border: none;
+    outline: none;
+    height: 40px;
+    padding: 10px;
+    width: 550px;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.lobbyDiv {
+    width: 550px;
+    margin: auto;
+    margin-bottom: 20px;
+    display: flex;
+}
+
+.lobbyDiv>* {
+    width: 48%;
+}
+
+.lobbyDiv>div {
+    display: flex;
+}
+
+.lobbyDiv>div>* {
+    border: none;
+}
+
+.lobbyDiv>div>input {
+    background-color: rgb(230, 57, 70);
+    outline: none;
+    border-radius: 10px 0 0 10px;
+    border: none;
+    width: 75%;
+    letter-spacing: 5px;
+    box-sizing: border-box;
+    padding-left: 10px;
+}
+
+.lobbyDiv>div>input::placeholder {
+    color: black;
+    letter-spacing: 1px;
+
+}
+
+.lobbyDiv>div>button {
+    width: 25%;
+    border-radius: 0 10px 10px 0;
+    background-color: rgb(60, 228, 66);
+    cursor: pointer;
+}
+
+.lobbyDiv>button {
+    height: 35px;
+    margin-left: auto;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.publicLobby {
+    background-color: rgb(230, 57, 70);
+    float: left;
+}
+
+.privateLobby {
+    background-color: rgb(69, 123, 157);
+    float: right;
+}
+
+.uploadMemeBtn {
+    margin: auto;
+    width: fit-content;
+}
+
+.uploadMemeBtn>a {
+    height: 35px;
+    padding: 10px;
+    width: 250px;
+    background-color: rgb(39, 238, 172);
+    border-radius: 10px;
+    box-sizing: border-box;
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+    color: black;
+}
+
+.uploadMemeBtn p {
+    margin: 0;
+}

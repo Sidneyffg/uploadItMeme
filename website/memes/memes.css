@@ -1,0 +1,205 @@
+h1,
+p {
+    margin-left: 20px;
+}
+
+.header {
+    text-align: center;
+}
+
+.memeCountContainer {
+    display: flex;
+    width: calc(100% - 40px);
+    margin: auto;
+}
+
+.fileUploadBtn {
+    padding: 5px;
+    border-radius: 3px;
+    background-color: rgb(150, 150, 150);
+    height: 20px;
+    margin-top: 10px;
+    margin-left: auto;
+    cursor: pointer;
+}
+
+.line {
+    width: calc(100% - 100px);
+    border-style: solid;
+    border-bottom: none;
+    border-width: 1px;
+    margin: auto;
+    margin-bottom: 30px;
+}
+
+.memes {
+    width: 100%;
+}
+
+.memes>div {
+    position: relative;
+    width: min-content;
+    padding: 0;
+    display: inline-block;
+    margin: 8px;
+}
+
+.image {
+    max-width: 300px;
+    height: 300px;
+    overflow: hidden;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+#editableMeme {
+    max-width: 450px;
+    height: 450px;
+    overflow: hidden;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.icon {
+    position: absolute;
+    width: 40px;
+    top: 0;
+    cursor: pointer;
+}
+
+.delete {
+    left: 0;
+}
+
+.edit {
+    left: calc(100% - 40px);
+}
+
+.shadow {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, .75);
+}
+
+.editMemecontainer {
+    position: absolute;
+    width: 800px;
+    height: 600px;
+    left: calc(50% - 400px);
+    top: calc(50% - 300px);
+    background-color: white;
+    border-radius: 5px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.editMemecontainer>div {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-areas: "left right";
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+
+.leftSide {
+    grid-area: left;
+}
+
+.rightSide {
+    grid-area: right;
+}
+
+.textAreaDiv {
+    display: flex;
+}
+
+.textAreaDiv>img {
+    height: 30px;
+    margin: 10px 20px 0 auto;
+    cursor: pointer;
+}
+
+.textArea {
+    position: absolute;
+    background-color: rgba(0, 0, 0, .5);
+    resize: both;
+    overflow: auto;
+    min-width: 100px;
+    min-height: 50px;
+}
+
+.movable {
+    width: calc(100% - 30px);
+    height: 100%;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.textArea p {
+    color: white;
+    margin: 0;
+}
+
+#newTextArea {
+    margin-left: 20px;
+    height: 30px;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.301);
+    border-width: 1px;
+    cursor: pointer;
+}
+
+#imageContainer {
+    position: relative;
+}
+
+#save {
+    width: 70px;
+    height: 30px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin: 20px;
+}
+
+.loginField {
+    margin: auto;
+    width: min-content;
+    text-align: center;
+    margin-top: 100px;
+}
+
+.loginField>input {
+    width: 250px;
+    margin-bottom: 35px;
+    height: 30px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    padding-inline: 10px;
+    opacity: 90%;
+}
+
+.buttons {
+    display: flex;
+    width: fit-content;
+    margin: auto;
+    gap: 10px;
+}
+
+.buttons>button {
+    padding: 5px;
+}
+
+.createGroup {
+    width: 500px;
+    height: 400px;
+    background-color: blue;
+}

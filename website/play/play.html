@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="static/std/std.css">
+    <link rel="stylesheet" href="static/play/play.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="static/std/std.js"></script>
+
+    <script src="static/play/play.js" defer></script>
+
+</head>
+
+<body>
+
+    <div class="screen" id="waitScreen" style="display: none;">
+        <div class="waitingHeader">
+            <h1 id="headerText">You've completed your meme!</h1>
+            <h2 id="subHeaderText">Waiting for others to finish...</h2>
+        </div>
+        <div class="timerContainer">
+            <h1 id="timeLeft"></h1>
+            <p>seconds</p>
+        </div>
+    </div>
+    <div class="screen" id="makeMemeScreen" style="display: none;">
+        <div class="header">
+            <div class="memeTimeContainer">
+                <h3 id="memeTimer"></h3>
+                <h3>&nbsp;S</h3>
+            </div>
+        </div>
+        <div id="leftSide">
+            <h2 class="imageName"></h2>
+            <div class="memeImageContainer" id="memeImageContainer">
+                <img class="memeImage" id="memeImage" alt="memeImage">
+                <div id="textAreasContainer">
+
+                </div>
+            </div>
+            <button class="switchMeme" onclick="newMeme()">
+                <p>switch meme</p>
+                <img id="switchMemeImg">
+            </button>
+        </div>
+        <div id="rightSide">
+            <div id="textAreasInputs">
+
+            </div>
+            <button class="submitButton" onclick="submitMeme()">submit</button>
+        </div>
+    </div>
+    <div class="screen" id="rateMemeScreen" style="display: none;">
+        <div class="header"></div>
+        <div id="memeArea">
+            <div class="memeImageContainer" id="rateMemeImageContainer">
+                <img class="memeImage" id="rateMemeImage" alt="memeImage">
+                <div id="rateTextAreasContainer">
+
+                </div>
+            </div>
+        </div>
+        <div id="rateArea">
+            <button id="arrowUp" class="outerButton"><img alt="up" id="arrowUpImg" onclick="sendMemeRate(1)"></button>
+            <button id="mehButton" onclick="sendMemeRate(0)">
+                <h2>MEH</h2>
+            </button>
+            <button id="arrowDown" class="outerButton"> <img id="arrowDownImg" alt="down" onclick="sendMemeRate(-1)"></button>
+        </div>
+    </div>
+    <div class="screen" id="recapScreen" style="display: none;">
+        <div id="leaderboard">
+
+        </div>
+        <div id="rankedMemes">
+
+        </div>
+    </div>
+    <div class="screen" id="endScreen">
+        <div id="endLeaderboard">
+            <ul id="players">
+
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>

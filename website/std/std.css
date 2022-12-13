@@ -1,0 +1,26 @@
+html,
+body {
+    height: 100%;
+    background-image: linear-gradient(rgb(38, 68, 110), rgb(39, 90, 163));
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: "comfortaa";
+}
+
+input,
+button {
+    font-family: "comfortaa";
+}
+
+.uploadIt,
+.meme {
+    color: red;
+    margin: 0;
+    font-size: 4rem;
+    font-family: "ZCOOL QingKe HuangYou";
+}
+
+.meme {
+    font-size: 6rem;
+    margin-top: -20px;
+}
