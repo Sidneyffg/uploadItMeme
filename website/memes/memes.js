@@ -4,6 +4,12 @@ const loginBtn = document.getElementById("loginBtn");
 let loginPage = true;
 let savedGoupName, savedGroupPassword, savedMemeGroup, selectedMeme;
 
+
+const editMemecontainer = document.getElementById("editMemecontainer")
+let mouseonEditMemecontainer = false
+editMemecontainer.addEventListener("mouseenter", () => mouseonEditMemecontainer = true)
+editMemecontainer.addEventListener("mouseleave", () => mouseonEditMemecontainer = false)
+
 createGroupBtn.addEventListener("click", e => {
   document.getElementById("groupNameIpt").value = ""
   document.getElementById("groupPasswordIpt").value = ""
@@ -109,10 +115,10 @@ function editMeme(memeId) {
   editableMeme.src = `${url}/meme?memeId=${memeId}&sessionId=${sessionId}&memeGroupName=${savedGoupName}&password=${savedGroupPassword}`
   document.getElementById("shadow").style.display = "block"
   document.getElementById("editMemecontainer").style.display = "block"
-  window.scrollTo(0, 0);
 }
 
-function closeEditMeme() {
+function closeEditMeme(forceClose) {
+  if (!forceClose && mouseonEditMemecontainer) return
   document.getElementById("shadow").style.display = "none"
   document.getElementById("editMemecontainer").style.display = "none"
   textAreas.forEach(e => {
@@ -156,7 +162,7 @@ function saveMeme() {
       console.log("Failed to delete meme...");
       return
     }
-    closeEditMeme()
+    closeEditMeme(true)
   })
 }
 
@@ -241,7 +247,7 @@ class TextArea {
   deleteTextArea() {
     this.textAreaDiv.remove();
     this.textArea.remove();
-    if(textAreaAmount < 5) return
+    if (textAreaAmount < 5) return
     let newButton = document.createElement("button");
     newButton.id = "newTextArea"
     newButton.onclick = addTextArea

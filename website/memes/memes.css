@@ -75,16 +75,16 @@ p {
     left: calc(100% - 40px);
 }
 
-.shadow {
+#shadow {
     width: 100%;
     height: 100%;
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
-    background-color: rgba(0, 0, 0, .75);
+    background-color: rgba(0, 0, 0, .8);
 }
 
-.editMemecontainer {
+#editMemecontainer {
     position: absolute;
     width: 800px;
     height: 600px;
@@ -96,7 +96,7 @@ p {
     box-sizing: border-box;
 }
 
-.editMemecontainer>div {
+#editMemecontainer>div {
     width: 100%;
     height: 100%;
     display: grid;

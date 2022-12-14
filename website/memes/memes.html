@@ -35,20 +35,21 @@
 
         </div>
 
-        <div class="shadow" id="shadow" style="display: none;" onclick="closeEditMeme()"></div>
-        <div class="editMemecontainer" id="editMemecontainer" style="display: none;">
-            <div>
-                <div class="leftSide" id="leftSide">
-                    <h3>meme</h3>
-                    <div id="imageContainer">
-                        <img id="editableMeme"
-                            alt="There should be an image here. If you're seeing this, refresh the page...">
+        <div id="shadow" style="display: none;" onclick="closeEditMeme(false)">
+            <div id="editMemecontainer" style="display: none;">
+                <div>
+                    <div class="leftSide" id="leftSide">
+                        <h3>meme</h3>
+                        <div id="imageContainer">
+                            <img id="editableMeme"
+                                alt="There should be an image here. If you're seeing this, refresh the page...">
+                        </div>
+                        <button id="save" onclick="saveMeme()">Save</button>
                     </div>
-                    <button id="save" onclick="saveMeme()">Save</button>
-                </div>
-                <div class="rightSide" id="rightSide">
-                    <h3>Text areas</h3>
-                    <button id="newTextArea" onclick="addTextArea()">Create new text area.</button>
+                    <div class="rightSide" id="rightSide">
+                        <h3>Text areas</h3>
+                        <button id="newTextArea" onclick="addTextArea()">Create new text area.</button>
+                    </div>
                 </div>
             </div>
         </div>
