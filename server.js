@@ -6,7 +6,7 @@ const server = http.createServer(app)
 const uuid = require("uuid")
 const { Server } = require('socket.io')
 const io = new Server(server, { maxHttpBufferSize: 1e8 })
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcryptjs")
 
 const fs = require("fs")
 let memesInfo = JSON.parse(fs.readFileSync("memes/memesInfo.json"))
