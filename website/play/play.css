@@ -1,4 +1,5 @@
-html,body {
+html,
+body {
     margin: 0;
 }
 
@@ -21,7 +22,7 @@ html,body {
     box-sizing: border-box;
 }
 
-.waitingHeader > h1 {
+.waitingHeader>h1 {
     font-size: 2rem;
     margin: 0;
 }
@@ -47,9 +48,9 @@ html,body {
 
 #makeMemeScreen {
     display: grid;
-    grid-template-areas: 
-    "header header header"
-    "leftSide split rightSide";
+    grid-template-areas:
+        "header header header"
+        "leftSide split rightSide";
     grid-template-rows: 100px 1fr;
     grid-template-columns: 1fr 20px 1fr;
 }
@@ -91,15 +92,15 @@ html,body {
     position: absolute;
 }
 
-.memeTextContainer > h3 {
+.memeTextContainer>h3 {
     width: 100%;
     height: 100%;
     margin: 0;
-  color:white;
-  text-shadow: -1px 1px 0 #000,
-				  1px 1px 0 #000,
-				 1px -1px 0 #000,
-				-1px -1px 0 #000;
+    color: white;
+    text-shadow: -1px 1px 0 #000,
+        1px 1px 0 #000,
+        1px -1px 0 #000,
+        -1px -1px 0 #000;
 }
 
 .switchMeme {
@@ -107,11 +108,11 @@ html,body {
     cursor: pointer;
 }
 
-.switchMeme > p {
+.switchMeme>p {
     margin: 7px 0;
 }
 
-.switchMeme > img {
+.switchMeme>img {
     width: 30px;
     height: 30px;
 }
@@ -153,10 +154,10 @@ html,body {
 
 #rateMemeScreen {
     display: grid;
-    grid-template-areas: 
-    "header header header"
-    "memeBuddy memeArea timeLeft"
-    "rateArea rateArea rateArea";
+    grid-template-areas:
+        "header header header"
+        "memeBuddy memeArea timeLeft"
+        "rateArea rateArea rateArea";
     grid-template-rows: 150px 1fr 100px;
     grid-template-columns: 250px 1fr 250px;
 }
@@ -184,7 +185,7 @@ html,body {
     cursor: pointer;
 }
 
-.outerButton > img {
+.outerButton>img {
     width: 30px;
     height: 25px;
 }
@@ -199,7 +200,7 @@ html,body {
     cursor: pointer;
 }
 
-#mehButton > h2 {
+#mehButton>h2 {
     margin: 5px 0;
 }
 
@@ -211,15 +212,15 @@ html,body {
     background-color: rgb(69, 123, 157);
 }
 
-#arrowDown > img {
+#arrowDown>img {
     transform: rotate(180deg);
 }
 
 #recapScreen {
     display: grid;
     grid-template-areas:
-    "header header"
-    "rankedMemes leaderboard";
+        "header header"
+        "rankedMemes leaderboard";
     grid-template-rows: 100px 1fr;
     grid-template-columns: 1fr 400px;
 }
@@ -235,7 +236,7 @@ html,body {
     box-sizing: border-box;
 }
 
-#leaderboard > h2 {
+#leaderboard>h2 {
     margin: 0;
 }
 
@@ -278,7 +279,8 @@ html,body {
     box-sizing: border-box;
     padding: 15px;
 }
-.underImageDiv > h3 {
+
+.underImageDiv>h3 {
     margin: 0;
     width: fit-content;
 }
@@ -289,23 +291,15 @@ html,body {
 
 #endScreen {
     display: grid;
-    grid-template-areas: 
-    "header"
-    "endLeaderboard"
-    "topMemes";
+    grid-template-areas:
+        "header"
+        "endLeaderboard"
+        "topMemes";
     grid-template-rows: 100px 1fr 1fr;
 }
 
 #endLeaderboard {
     grid-area: endLeaderboard;
-}
-
-#endLeaderboard >li {
-    display: flex;
-}
-
-#endLeaderboard > li > p:last-child {
-    margin-left: auto;
 }
 
 #players {
@@ -315,8 +309,17 @@ html,body {
 }
 
 #players>li {
+    display: flex;
     background-color: rgb(27, 62, 111);
     padding: 5px;
+}
+
+#players>li>p {
+    margin: 0;
+}
+
+#players>li>p:last-child {
+    margin-left: auto !important;
 }
 
 #players>li:nth-child(even) {

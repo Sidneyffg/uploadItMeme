@@ -45,7 +45,7 @@ function getGameInfo() {
         openScreen("recapScreen", "grid")
       } else if (newGame.activity == "end") {
         let users = []
-        
+
         newGame.userNames.forEach((e, idx) => {
           users.push({
             username: e,
@@ -54,7 +54,7 @@ function getGameInfo() {
         })
         users.sort((a, b) => b.score - a.score);
         users.forEach((e, idx) => {
-          document.getElementById("players").innerHTML += `<li><p>${idx + 1}. ${e.username}</p><p>${e.score}</p></li>`
+          document.getElementById("players").innerHTML += `<li><p>${idx + 1}. ${e.username}</p><p>${e.score} points</p></li>`
         })
         openScreen("endScreen", "grid")
         clearInterval(intervalId);
@@ -154,7 +154,7 @@ function newMeme() {
     reloadImage("memeImage", "textAreasContainer", "textArea", selectedMeme)
     let textAreasInputs = ""
     selectedMeme.textAreas.forEach((e, idx) => {
-      textAreasInputs += `<input type="text" class="textAreaInp" placeholder="Text area ${idx}" id="textAreaInp${idx}" onkeyup="inputChange(${idx})">`
+      textAreasInputs += `<input type="text" class="textAreaInp" placeholder="Text area ${idx}" id="textAreaInp${idx}" onkeyup="inputChange(${idx})" autocomplete="off">`
     })
     document.getElementById("textAreasInputs").innerHTML = textAreasInputs
   })
@@ -181,7 +181,7 @@ function reloadImage(imageId, textAreaContainerId, textAreaId, memeInfo) {
                 <h3 id="${textAreaId}${idx}">${e.text}</h3>
             </div>
         `
-        textAreaContainer.style.fontSize = 35 - Math.max(Math.round(Math.sqrt(e.text.length) * 2.5) - textAreaContainer.offsetWidth / 70, 0) + "px"
+      textAreaContainer.style.fontSize = 35 - Math.max(Math.round(Math.sqrt(e.text.length) * 2.5) - textAreaContainer.offsetWidth / 70, 0) + "px"
     }
   })
 }

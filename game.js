@@ -32,7 +32,7 @@ class Game {
       }
       this.timePassed = Date.now() - this.startTime;
     } else if (this.activity === "rateMeme") {                                                                  /* moet 1 zijn want maker heeft altijd null */
-      if (Date.now() - this.startTime > this.timeToNextActivity || this.submittedRates.filter(e => typeof (e) !== "number").length === 0) {
+      if (Date.now() - this.startTime > this.timeToNextActivity || this.submittedRates.filter(e => typeof (e) !== "number").length === 1) {
         this.nextAcivity();
         return
       }
@@ -62,6 +62,7 @@ class Game {
       this.ratedMemes = 0;
       this.submittedRates = new Array(this.userIds.length).fill(null)
       let makeMemeToRate = this.selectedMemes[this.ratedMemes];
+      this.recapMemes = [];
       if (this.submittedMemes[this.ratedMemes] === null) {
         this.nextAcivity();
         return;
@@ -81,31 +82,28 @@ class Game {
       })
       let scoreToAdd = Math.round((newScore / scoreLength ? newScore / scoreLength : 0) * 1000)
       this.scores[this.ratedMemes] += scoreToAdd;
+      if (this.submittedMemes[this.ratedMemes] !== null) {
+        let memeToPush = JSON.parse(JSON.stringify(this.selectedMemes[this.ratedMemes]));
+        memeToPush.username = this.userNames[this.ratedMemes];
+        memeToPush.madeMeme = true;
+        memeToPush.score = scoreToAdd;
+        console.log(memeToPush)
+        memeToPush.textAreas.forEach((e, idx) => {
+          memeToPush.textAreas[idx].text = this.submittedMemes[this.ratedMemes][idx];
+        })
+        this.recapMemes.push(memeToPush);
+      } else {
+        this.recapMemes.push({
+          madeMeme: false,
+          username: this.userNames[this.ratedMemes]
+        })
+      }
       this.ratedMemes++;
       if (this.ratedMemes >= this.submittedMemes.length) {
         this.activity = "recapMemes"
         this.timeToNextActivity = 15000;
         this.startTime = Date.now();
         this.timePassed = 0;
-        this.recapMemes = [];
-        for (let i = 0; i < this.userIds.length; i++) {
-          if (this.submittedMemes[i] !== null) {
-            let memeToPush = JSON.parse(JSON.stringify(this.selectedMemes[i]));
-            memeToPush.username = this.userNames[i];
-            memeToPush.madeMeme = true;
-            memeToPush.score = scoreToAdd;
-            memeToPush.textAreas.forEach((e, idx) => {
-              memeToPush.textAreas[idx].text = this.submittedMemes[i][idx];
-            })
-
-            this.recapMemes.push(memeToPush);
-          } else {
-            this.recapMemes.push({
-              madeMeme: false,
-              username: this.userNames[i]
-            })
-          }
-        }
         return
       }
       if (this.submittedMemes[this.ratedMemes] === null) {
