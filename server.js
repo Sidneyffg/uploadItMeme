@@ -6,7 +6,7 @@ const server = http.createServer(app)
 const uuid = require("uuid")
 const { Server } = require('socket.io')
 const io = new Server(server, { maxHttpBufferSize: 1e8 })
-const bcrypt = require("bcryptjs")
+const bcrypt = require("bcrypt")
 
 const fs = require("fs")
 let memesInfo = JSON.parse(fs.readFileSync("memes/memesInfo.json"))
@@ -60,7 +60,7 @@ app.get("/meme", (req, res) => {
 
         const game = games.filter(e => e.gameId == gameId)[0];
         console.log(game)
-        if (!game || !game.userIds.includes(sessionId) || game.memeGroupName !== memeGroupName) return
+        if (!game || game.users.filter(a => a.id == sessionId).length == 0 || game.memeGroupName !== memeGroupName) return
 
         let meme = memesInfo[memeGroupName].memes.filter(e => e.memeId == memeId)[0]
         if (meme == undefined) return
@@ -102,8 +102,8 @@ io.on("connection", socket => {
         };
 
         let game = games.filter(e => e.gameId == gameId)[0];
-        if (game === undefined || !game.userIds.includes(sessionId)) {
-            console.log("game")
+        if (game === undefined || game.users.filter(a => a.id == sessionId).length == 0) {
+            console.log(game.users)
             callback(false)
             return
         }
@@ -111,15 +111,31 @@ io.on("connection", socket => {
 
         game = JSON.parse(JSON.stringify(game))
 
-        game.leader = (game.leader === sessionId);
+        game.leader = (game.leaderId === sessionId);
+        delete game.leaderId
 
-        if (game.activity !== "lobby" && game.activity !== "waiting") {
+        /*if (game.activity !== "lobby" && game.activity !== "waiting") {
             let userPlace = game.userIds.indexOf(sessionId);
-            game.selectedMeme = game.selectedMemes[userPlace]
-            delete game.selectedMemes
+            game.selectedMemes = game.selectedMemess[userPlace]
+            delete game.selectedMemess
         }
-        delete game.userIds;
+        delete game.userIds;*/
         callback(game);
+    })
+
+    socket.on("updateGameSettings", (sessionId, gameId, gameSettings, callback) => {
+        if (!checkSessionId(sessionId)) {
+            callback(false)
+            return
+        };
+
+        let game = games.filter(e => e.gameId == gameId)[0]
+        if (game === undefined || game.users.filter(a => a.id == sessionId).length == 0 || game.activity !== "lobby" || game.leaderId !== sessionId) {
+            callback(false);
+            return
+        };
+
+        game.settings = gameSettings;
     })
 
     socket.on("addMemeGroupToGame", (sessionId, gameId, memeGroupName, memeGroupPassword, callback) => {
@@ -129,7 +145,7 @@ io.on("connection", socket => {
         };
 
         let game = games.filter(e => e.gameId == gameId)[0]
-        if (game === undefined || !game.userIds.includes(sessionId) || game.activity !== "lobby" || game.leader !== sessionId) {
+        if (game === undefined || game.users.filter(a => a.id == sessionId).length == 0 || game.activity !== "lobby" || game.leaderId !== sessionId) {
             callback(false);
             return
         };
@@ -151,7 +167,7 @@ io.on("connection", socket => {
         };
 
         let game = games.filter(e => e.gameId == gameId)[0]
-        if (game === undefined || !game.userIds.includes(sessionId) || game.activity !== "lobby" || game.memeGroupName === undefined) {
+        if (game === undefined || game.users.filter(a => a.id == sessionId).length == 0 || game.activity !== "lobby" || game.memeGroupName === undefined) {
             callback(false);
             return
         };
@@ -168,13 +184,13 @@ io.on("connection", socket => {
         };
 
         let game = games.filter(e => e.gameId == gameId)[0]
-        if (game === undefined || !game.userIds.includes(sessionId) || game.activity !== "makeMeme") {
+        let user = game.users.filter(e => e.id == sessionId)[0]
+        if (game === undefined || user == undefined || game.activity !== "makeMeme") {
             callback(false);
             return
         };
 
-        let userPlace = game.userIds.indexOf(sessionId);
-        if (game.submittedMemes[userPlace] !== null) {
+        if (user.submittedMemes.current !== null) {
             callback(false)
             return
         }
@@ -187,7 +203,7 @@ io.on("connection", socket => {
         }
 
         let newMeme = availableMemes[Math.floor(Math.random() * availableMemes.length)]
-        game.selectedMemes[userPlace] = JSON.parse(JSON.stringify(newMeme));
+        user.selectedMemes.current = JSON.parse(JSON.stringify(newMeme));
         console.log("yas")
         callback(newMeme)
     })
@@ -199,15 +215,14 @@ io.on("connection", socket => {
         };
 
         let game = games.filter(e => e.gameId == gameId)[0]
-        if (game === undefined || !game.userIds.includes(sessionId) || game.activity !== "makeMeme") {
+        let user = game.users.filter(e => e.id == sessionId)[0]
+        if (game === undefined || user == undefined || game.activity !== "makeMeme") {
             callback(false);
             return
         };
-        let userPlace = game.userIds.indexOf(sessionId);
-        game.submittedMemes[userPlace] = textAreas
-        callback(true)
 
-        console.log("Submitted memes:\n" + game.submittedMemes)
+        user.submittedMemes.current = textAreas
+        callback(true)
     })
 
     socket.on("rateMeme", (sessionId, gameId, score, callback) => {
@@ -217,17 +232,18 @@ io.on("connection", socket => {
         };
 
         let game = games.filter(e => e.gameId == gameId)[0]
-        if (game === undefined || !game.userIds.includes(sessionId) || game.activity !== "rateMeme" || (Math.abs(score) !== 1 && score !== 0)) {
+        let user = game.users.filter(e => e.id == sessionId)[0]
+        if (game === undefined || user == undefined || game.activity !== "rateMeme" || (Math.abs(score) !== 1 && score !== 0)) {
             callback(false);
             return
         };
-        let userPlace = game.userIds.indexOf(sessionId);
-        if (game.ratedMeme == userPlace) {
+
+        if (game.ratedMemes == game.users.indexOf(user)) {
             callback(false)
             return
         }
 
-        game.submittedRates[userPlace] = score;
+        user.submittedRates.current = score;
         callback(true)
     })
 
@@ -238,13 +254,32 @@ io.on("connection", socket => {
         };
 
         let game = games.filter(e => e.gameId == gameId)[0]
-        if (game === undefined || game.userIds.includes(sessionId) || game.activity !== "lobby") {
+        if (game === undefined || game.users.filter(e => e.id == sessionId).length > 0 || game.activity !== "lobby") {
             callback(false);
             return
         };
 
-        game.userNames.push(username)
-        game.userIds.push(sessionId);
+        game.users.push({
+            id: sessionId,
+            name: username,
+            score: 0,
+            selectedMemes: {
+                current: null,
+                past: []
+            },
+            submittedMemes: {
+                current: null,
+                past: []
+            },
+            submittedRates: {
+                current: null,
+                past: []
+            },
+            recapMemes: {
+                current: null,
+                past: [],
+            }
+        })
 
         callback(true)
     })

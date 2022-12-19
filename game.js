@@ -1,21 +1,40 @@
 class Game {
   constructor(gameId, creatorId, creatorName) {
     this.gameId = gameId;
-    this.userIds = [creatorId];
-    this.userNames = [creatorName];
-    this.leader = creatorId;
+    this.users = [{
+      id: creatorId,
+      name: creatorName,
+      score: 0,
+      selectedMemes: {
+        current: null,
+        past: []
+      },
+      submittedMemes: {
+        current: null,
+        past: []
+      },
+      submittedRates: {
+        current: null,
+        past: []
+      },
+      recapMemes: {
+        current: null,
+        past: [],
+      }
+    }]
+    this.leaderId = creatorId;
     this.activity = "lobby";
     this.memeGroupName;
+    this.settings = {
+      totalRounds: 3
+    }
   }
 
   startGame() {
     this.activity = "waiting"
-    this.startTime = Date.now();
-    this.timeToNextActivity = 5000;
-    this.timePassed = 0;
+    this.resetTimer(1);
     this.roundNum = 0;
     this.ratedMemes;
-    this.scores = new Array(this.userIds.length).fill(0);
   }
 
   checkRound() {
@@ -26,13 +45,13 @@ class Game {
       }
       this.timePassed = Date.now() - this.startTime;
     } else if (this.activity === "makeMeme") {
-      if (Date.now() - this.startTime > this.timeToNextActivity || this.submittedMemes.filter(e => !e).length === 0) {
+      if (Date.now() - this.startTime > this.timeToNextActivity || this.users.filter(e => e.submittedMemes.current == null).length === 0) {
         this.nextAcivity();
         return
       }
       this.timePassed = Date.now() - this.startTime;
     } else if (this.activity === "rateMeme") {                                                                  /* moet 1 zijn want maker heeft altijd null */
-      if (Date.now() - this.startTime > this.timeToNextActivity || this.submittedRates.filter(e => typeof (e) !== "number").length === 1) {
+      if (Date.now() - this.startTime > this.timeToNextActivity/* || this.submittedRates.filter(e => typeof (e) !== "number").length === 1*/) {
         this.nextAcivity();
         return
       }
@@ -49,89 +68,91 @@ class Game {
   nextAcivity() {
     if (this.activity === "waiting") {
       this.activity = "makeMeme"
-      this.submittedMemes = new Array(this.userIds.length).fill(null);
-      this.selectedMemes = new Array(this.userIds.length).fill(null);
-      this.startTime = Date.now();
-      this.timeToNextActivity = 120000;
-      this.timePassed = 0;
+      this.resetTimer(120)
     } else if (this.activity === "makeMeme") {
       this.activity = "rateMeme";
-      this.startTime = Date.now();
-      this.timeToNextActivity = 15000;
-      this.timePassed = 0;
+      this.users.sort(() => (Math.random() > .5) ? 1 : -1);
+      this.resetTimer(15)
       this.ratedMemes = 0;
-      this.submittedRates = new Array(this.userIds.length).fill(null)
-      let makeMemeToRate = this.selectedMemes[this.ratedMemes];
-      this.recapMemes = [];
-      if (this.submittedMemes[this.ratedMemes] === null) {
+      if (this.users[0].submittedMemes.current === null) {
         this.nextAcivity();
         return;
       }
-      this.submittedMemes[this.ratedMemes].forEach((e, idx) => {
+      let makeMemeToRate = this.users[0].selectedMemes.current
+      this.users[0].submittedMemes.current.forEach((e, idx) => {
         makeMemeToRate.textAreas[idx].text = e;
       });
       this.memeToRate = makeMemeToRate;
     } else if (this.activity === "rateMeme") {
       let newScore = 0;
       let scoreLength = 0;
-      this.submittedRates.forEach(e => {
-        if (e !== null) {
-          newScore += e;
+      this.users.forEach(e => {
+        if (e.submittedRates.current !== null) {
+          newScore += e.submittedRates.current;
           scoreLength++;
         }
       })
       let scoreToAdd = Math.round((newScore / scoreLength ? newScore / scoreLength : 0) * 1000)
-      this.scores[this.ratedMemes] += scoreToAdd;
-      if (this.submittedMemes[this.ratedMemes] !== null) {
-        let memeToPush = JSON.parse(JSON.stringify(this.selectedMemes[this.ratedMemes]));
-        memeToPush.username = this.userNames[this.ratedMemes];
+
+      for (let i = 0; i < this.users.length; i++) {
+        this.users[i].submittedRates.past.push(this.users[i].submittedRates.current);
+        this.users[i].submittedRates.current = null;
+      }
+
+      this.users[this.ratedMemes].score += scoreToAdd;
+      if (this.users[this.ratedMemes].submittedMemes.current !== null) {
+        let memeToPush = JSON.parse(JSON.stringify(this.users[this.ratedMemes].selectedMemes.current));
         memeToPush.madeMeme = true;
         memeToPush.score = scoreToAdd;
         console.log(memeToPush)
         memeToPush.textAreas.forEach((e, idx) => {
-          memeToPush.textAreas[idx].text = this.submittedMemes[this.ratedMemes][idx];
+          memeToPush.textAreas[idx].text = this.users[this.ratedMemes].submittedMemes.current[idx];
         })
-        this.recapMemes.push(memeToPush);
+        this.users[this.ratedMemes].recapMemes.current = memeToPush;
       } else {
-        this.recapMemes.push({
-          madeMeme: false,
-          username: this.userNames[this.ratedMemes]
-        })
+        this.users[this.ratedMemes].recapMemes.current = {
+          madeMeme: false
+        }
       }
       this.ratedMemes++;
-      if (this.ratedMemes >= this.submittedMemes.length) {
+      if (this.ratedMemes >= this.users.length) {
         this.activity = "recapMemes"
-        this.timeToNextActivity = 15000;
-        this.startTime = Date.now();
-        this.timePassed = 0;
+        this.resetTimer(15)
         return
       }
-      if (this.submittedMemes[this.ratedMemes] === null) {
+      if (this.users[this.ratedMemes].submittedMemes.current === null) {
         this.nextAcivity();
         return;
       }
-      this.startTime = Date.now();
-      this.timeToNextActivity = 12000;
-      this.timePassed = 0;
-      this.submittedRates = new Array(this.userIds.length).fill(null)
-      let makeMemeToRate = this.selectedMemes[this.ratedMemes];
-      this.submittedMemes[this.ratedMemes].forEach((e, idx) => {
+      this.resetTimer(15)
+      let makeMemeToRate = this.users[this.ratedMemes].selectedMemes.current;
+      this.users[this.ratedMemes].submittedMemes.current.forEach((e, idx) => {
         makeMemeToRate.textAreas[idx].text = e;
       });
       this.memeToRate = makeMemeToRate;
     } else if (this.activity === "recapMemes") {
-      if (this.roundNum == 2) {
+      if (this.roundNum + 1 == this.settings.totalRounds) {
         this.activity = "end"
         return;
       }
+      for (let i = 0; i < this.users.length; i++) {
+        this.users[i].submittedMemes.past.push(this.users[i].submittedMemes.current);
+        this.users[i].submittedMemes.current = null;
+        this.users[i].selectedMemes.past.push(this.users[i].selectedMemes.current);
+        this.users[i].selectedMemes.current = null;
+        this.users[i].recapMemes.past.push(this.users[i].recapMemes.current);
+        this.users[i].recapMemes.current = null;
+      }
       this.activity = "makeMeme"
       this.roundNum++;
-      this.submittedMemes = new Array(this.userIds.length).fill(null);
-      this.selectedMemes = new Array(this.userIds.length).fill(null);
-      this.startTime = Date.now();
-      this.timeToNextActivity = 120000;
-      this.timePassed = 0;
+      this.resetTimer(120)
     }
+  }
+
+  resetTimer(time) {
+    this.startTime = Date.now();
+    this.timeToNextActivity = time * 1000;
+    this.timePassed = 0;
   }
 }
 

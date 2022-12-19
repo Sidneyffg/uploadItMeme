@@ -1,16 +1,15 @@
 let gameId = localStorage.getItem("gameId")
-let newGame, oldGame = {
-    userNames: [],
+let oldGame = {
+    users: [],
     leader: false
 }
 
 getGameInfo()
 setInterval(getGameInfo, 500);
 function getGameInfo() {
-    socket.emit("getGameInfo", sessionId, gameId, (callback) => {
-        newGame = callback;
+    socket.emit("getGameInfo", sessionId, gameId, (newGame) => {
         if (!newGame) window.location.href = "/"
-        
+
         console.log(newGame)
 
         if (JSON.stringify(oldGame) === JSON.stringify(newGame)) {
@@ -19,22 +18,22 @@ function getGameInfo() {
         }
 
         if (newGame.activity !== "lobby") window.location.href = "/play";
-        if (oldGame == undefined || JSON.stringify(newGame.userNames) !== JSON.stringify(oldGame.userNames)) {
+        if (oldGame == undefined || JSON.stringify(newGame.users) !== JSON.stringify(oldGame.users)) {
             let playerHTML = "";
-            newGame.userNames.forEach(e => {
-                playerHTML += `<li>${e}</li>`
+            newGame.users.forEach(e => {
+                playerHTML += `<li>${e.name}</li>`
             });
             document.getElementById("players").innerHTML = playerHTML;
-            document.getElementById("playerCount").innerHTML = `${newGame.userNames.length} Players`
+            document.getElementById("playerCount").innerHTML = `${newGame.users.length} Players`
         }
-        if(oldGame.leader !== newGame.leader){
-            if(newGame.leader){
-                if(newGame.memeGroupName === undefined){
+        if (oldGame.leader !== newGame.leader) {
+            if (newGame.leader) {
+                if (newGame.memeGroupName === undefined) {
                     document.getElementById("memeGroupContainer").style.display = "block"
-                }else{
+                } else {
                     document.getElementById("startGame").style.display = "block"
                 }
-            }else{
+            } else {
                 document.getElementById("startGame").style.display = "none"
                 document.getElementById("memeGroupContainer").style.display = "none"
             }
@@ -49,25 +48,25 @@ function addMemeGroup() {
     let memeGroupName = document.getElementById("memeGroupName").value
     let memeGroupPassword = document.getElementById("memeGroupPassword").value
 
-    if(memeGroupName === "" || memeGroupPassword === "") return
+    if (memeGroupName === "" || memeGroupPassword === "") return
     socket.emit("addMemeGroupToGame", sessionId, gameId, memeGroupName, memeGroupPassword, (callback) => {
-        if(!callback) {
+        if (!callback) {
             console.log("Failed to add meme group...")
             return
         }
         document.getElementById("memeGroupContainer").style.display = "none"
         document.getElementById("startGame").style.display = "block"
-    } )
+    })
 }
 
 function startGame() {
     socket.emit("startGame", sessionId, gameId, (callback) => {
-        if(callback) window.location.href = "/play"
+        if (callback) window.location.href = "/play"
     })
 }
 
 
 function copyLobbyId() {
     navigator.clipboard.writeText("localhost:3000/join/" + gameId)
-    confirm("Link copied to clipboard!")
+    prompt("Link copied to clipboard!")
 }

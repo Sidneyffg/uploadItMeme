@@ -22,7 +22,7 @@ function getGameInfo() {
     if (newGame.activity == "rateMeme" && newGame.ratedMemes !== oldGame.ratedMemes) {
       console.log("rateNewMeme")
       rateNewMeme(newGame.memeToRate)
-      if (newGame.ratedMemes == newGame.userNames.indexOf(username)) {
+      if (newGame.users[newGame.ratedMemes].name === username) {
         canRateMeme = false;
         resetRateMemeButtons(50)
       } else {
@@ -41,20 +41,20 @@ function getGameInfo() {
       } else if (newGame.activity === "rateMeme") {
         openScreen("rateMemeScreen", "grid")
       } else if (newGame.activity == "recapMemes") {
-        initRecapScreen(newGame.recapMemes, newGame.scores)
+        initRecapScreen(newGame.users)
         openScreen("recapScreen", "grid")
       } else if (newGame.activity == "end") {
         let users = []
 
-        newGame.userNames.forEach((e, idx) => {
+        newGame.users.forEach(e => {
           users.push({
-            username: e,
-            score: newGame.scores[idx]
+            name: e.name,
+            score: e.score
           })
         })
         users.sort((a, b) => b.score - a.score);
         users.forEach((e, idx) => {
-          document.getElementById("players").innerHTML += `<li><p>${idx + 1}. ${e.username}</p><p>${e.score} points</p></li>`
+          document.getElementById("players").innerHTML += `<li><p>${idx + 1}. ${e.name}</p><p>${e.score} points</p></li>`
         })
         openScreen("endScreen", "grid")
         clearInterval(intervalId);
@@ -64,15 +64,15 @@ function getGameInfo() {
   })
 }
 
-function initRecapScreen(memesData, scores) {
+function initRecapScreen(users) {
   let leaderboardUsers = [];
   document.getElementById("rankedMemes").innerHTML = ""
-  memesData.forEach((e, idx) => {
+  users.forEach((e, idx) => {
     leaderboardUsers.push({
-      username: e.username,
-      score: scores[idx]
+      name: e.name,
+      score: e.score
     });
-    if (e.madeMeme) {
+    if (e.recapMemes.current.madeMeme) {
       document.getElementById("rankedMemes").innerHTML += `
             <div class="rankedMemesItem">
                 <div class="memeImageContainer">
@@ -80,12 +80,12 @@ function initRecapScreen(memesData, scores) {
                     <div id="recapMemeImageContainer${idx}"></div>
                 </div>
                 <div class="underImageDiv">
-                    <h3>${e.username}</h3>
-                    <h3>${e.score.toString()} points</h3>
+                    <h3>${e.name}</h3>
+                    <h3>${e.score} points</h3>
                 </div>
             </div>
             `
-      reloadImage("recapMemeImage" + idx, `recapMemeImageContainer${idx}`, "", e)
+      reloadImage("recapMemeImage" + idx, `recapMemeImageContainer${idx}`, "", e.recapMemes.current)
     }
   })
   leaderboardUsers.sort((a, b) => b.score - a.score);
@@ -93,7 +93,7 @@ function initRecapScreen(memesData, scores) {
   leaderboardUsers.forEach((e, idx) => {
     leaderboardHtml += `
         <div class="leaderboardItem">
-            <p>${idx}. ${e.username}</p>
+            <p>${idx + 1}. ${e.name}</p>
             <p>${e.score} points</p>
         </div>
         `
@@ -188,7 +188,7 @@ function reloadImage(imageId, textAreaContainerId, textAreaId, memeInfo) {
 
 function submitMeme() {
   let textAreas = []
-  let textAreaLength = oldGame.selectedMeme.textAreas.length
+  let textAreaLength = oldGame.users.filter(e => e.name == username)[0].selectedMemes.current.textAreas.length
   for (let i = 0; i < textAreaLength; i++) {
     textAreas.push(document.getElementById("textAreaInp" + i).value)
   }
