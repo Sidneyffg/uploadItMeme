@@ -15,6 +15,26 @@ const Game = require("./game.js");
 const { captureRejectionSymbol } = require('events');
 let games = [];
 
+let groupUsers = {
+    groups: [],
+    isUserTrusted(userId, groupName) {
+        let selectedGroup = this.groups.filter(e => e.name == groupName)[0];
+        if (selectedGroup == undefined || !selectedGroup.trustedUserIds.includes(userId)) return false
+        return true
+    },
+    addTrustedUser(userId, groupName) {
+        let selectedGroup = this.groups.filter(e => e.name == groupName)[0];
+        if (selectedGroup == undefined) {
+            this.groups.push({
+                name: groupName,
+                trustedUserIds: [userId]
+            })
+            return
+        }
+        selectedGroup.trustedUserIds.push(userId)
+    }
+}
+
 let activeSessionIds = [];
 let sessionIdsTimestamps = [];
 
@@ -52,14 +72,12 @@ app.get("/meme", (req, res) => {
     const urlParams = new URLSearchParams(queryObject)
     const sessionId = urlParams.get("sessionId")
     if (!checkSessionId(sessionId)) return
-    console.log(urlParams.get("gameId"))
     if (urlParams.get("gameId")) {
         const gameId = urlParams.get("gameId");
         const memeId = urlParams.get("memeId");
         const memeGroupName = urlParams.get("memeGroupName")
 
         const game = games.filter(e => e.gameId == gameId)[0];
-        console.log(game)
         if (!game || game.users.filter(a => a.id == sessionId).length == 0 || game.memeGroupName !== memeGroupName) return
 
         let meme = memesInfo[memeGroupName].memes.filter(e => e.memeId == memeId)[0]
@@ -70,9 +88,8 @@ app.get("/meme", (req, res) => {
         return
     }
     const memeGroupName = urlParams.get("memeGroupName")
-    if (memesInfo[memeGroupName] === undefined) return
-    const memeGroup = JSON.parse(JSON.stringify(memesInfo[memeGroupName]))
-    if (!bcrypt.compare(memeGroup.password, urlParams.get("password"))) return
+    const memeGroup = memesInfo[memeGroupName]
+    if (!checkMemeGroup(sessionId, memeGroupName, urlParams.get("password"))) return
     let memeId = urlParams.get("memeId");
 
     let selectedMeme = memeGroup.memes.filter(e => e.memeId === memeId)[0];
@@ -82,28 +99,26 @@ app.get("/meme", (req, res) => {
 })
 
 io.on("connection", socket => {
-
     socket.on("createPrivateLobby", (sessionId, username, callback) => {
-        console.log("game made")
+
         if (!checkSessionId(sessionId)) {
             callback(false)
             return
         };
         const gameId = genRanString(5);
         games.push(new Game(gameId, sessionId, username))
+        console.log("New game: " + gameId)
         callback(gameId)
     })
 
     socket.on("getGameInfo", (sessionId, gameId, callback) => {
         if (!checkSessionId(sessionId)) {
-            console.log("session")
             callback(false)
             return
         };
 
         let game = games.filter(e => e.gameId == gameId)[0];
         if (game === undefined || game.users.filter(a => a.id == sessionId).length == 0) {
-            console.log(game.users)
             callback(false)
             return
         }
@@ -150,7 +165,7 @@ io.on("connection", socket => {
             return
         };
 
-        if (!checkMemeGroup(memeGroupName, memeGroupPassword)) {
+        if (!checkMemeGroup(sessionId, memeGroupName, memeGroupPassword)) {
             callback(false)
             return
         }
@@ -173,7 +188,7 @@ io.on("connection", socket => {
         };
 
         game.startGame();
-        console.log("started")
+        console.log("Started game: " + gameId)
         callback(true)
     })
 
@@ -204,7 +219,6 @@ io.on("connection", socket => {
 
         let newMeme = availableMemes[Math.floor(Math.random() * availableMemes.length)]
         user.selectedMemes.current = JSON.parse(JSON.stringify(newMeme));
-        console.log("yas")
         callback(newMeme)
     })
 
@@ -288,12 +302,12 @@ io.on("connection", socket => {
         if (activeSessionIds.includes(sessionId)) {
             callback(true);
             sessionIdsTimestamps[activeSessionIds.indexOf(sessionId)] = Date.now();
-            console.log(activeSessionIds);
             return
         }
         let newSessionId = uuid.v4();
         activeSessionIds.push(newSessionId);
-        console.log(activeSessionIds);
+        console.log(`New user: ${newSessionId}`);
+        console.log(`${activeSessionIds.length} users online!`)
         sessionIdsTimestamps.push(Date.now());
         callback(newSessionId);
     })
@@ -323,7 +337,7 @@ io.on("connection", socket => {
             return
         };
 
-        if (!checkMemeGroup(groupName, groupPassword)) {
+        if (!checkMemeGroup(sessionId, groupName, groupPassword)) {
             callback(false)
             return
         }
@@ -339,14 +353,13 @@ io.on("connection", socket => {
             return
         };
 
-        if (!checkMemeGroup(groupName, groupPassword)) {
+        if (!checkMemeGroup(sessionId, groupName, groupPassword)) {
             callback(false)
             return
         }
 
         let memeId = genRanString(10);
         let memeExtention = memeName.split(".")[memeName.split(".").length - 1]
-        console.log(memeName)
         fs.writeFileSync("memes/" + memeId + "." + memeExtention, meme)
         let memeData = {
             memeId: memeId,
@@ -364,7 +377,7 @@ io.on("connection", socket => {
             callback(false)
             return
         };
-        if (!checkMemeGroup(groupName, groupPassword)) {
+        if (!checkMemeGroup(sessionId, groupName, groupPassword)) {
             callback(false)
             return
         }
@@ -388,10 +401,12 @@ io.on("connection", socket => {
     })
 })
 
-function checkMemeGroup(groupName, groupPassword) {
-    if (memesInfo[groupName] == undefined || bcrypt.compareSync(memesInfo[groupName].password, groupPassword)) {
+function checkMemeGroup(userId, groupName, groupPassword) {
+    if (groupUsers.isUserTrusted(userId, groupName)) return true
+    if (memesInfo[groupName] == undefined || !bcrypt.compareSync(groupPassword, memesInfo[groupName].password)) {
         return false
     }
+    groupUsers.addTrustedUser(userId, groupName)
     return true
 }
 
@@ -402,7 +417,6 @@ function saveMemesInfo() {
 function genRanString(length) {
     let ranstring = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
     let string = '';
-    console.log(ranstring.length)
     for (let i = 0; i < length; i++) {
         string += ranstring.charAt(Math.round(Math.random() * 61))
     }
@@ -424,7 +438,6 @@ function checkSessionIds() {
         activeSessionIds.splice(e, 1);
         sessionIdsTimestamps.splice(e, 1);
     })
-    console.log(activeSessionIds);
 }
 
 function checkSessionId(sessionId) {
