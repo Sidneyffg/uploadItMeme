@@ -139,6 +139,7 @@ io.on("connection", socket => {
     })
 
     socket.on("updateGameSettings", (sessionId, gameId, gameSettings, callback) => {
+        console.log("settingsUpdate")
         if (!checkSessionId(sessionId)) {
             callback(false)
             return
@@ -151,6 +152,7 @@ io.on("connection", socket => {
         };
 
         game.settings = gameSettings;
+        callback(true)
     })
 
     socket.on("addMemeGroupToGame", (sessionId, gameId, memeGroupName, memeGroupPassword, callback) => {
@@ -296,6 +298,52 @@ io.on("connection", socket => {
         })
 
         callback(true)
+    })
+
+    socket.on("playAgain", (sessionId, gameId, username, callback) => {
+        if (!checkSessionId(sessionId)) {
+            callback(false)
+            return
+        };
+
+        let game = games.filter(e => e.gameId == gameId)[0]
+        if (game === undefined || game.users.filter(e => e.id == sessionId).length == 0 || game.activity !== "end") {
+            callback(false);
+            return
+        };
+        if (game.newGameId == undefined) {
+            let newGameId = genRanString(5)
+            games.push(new Game(newGameId, sessionId, username))
+            game.newGameId = newGameId;
+        } else {
+            let newGame = games.filter(e => e.gameId == game.newGameId)[0]
+            if (newGame === undefined || newGame.activity !== "lobby") {
+                callback(false);
+                return
+            };
+            newGame.users.push({
+                id: sessionId,
+                name: username,
+                score: 0,
+                selectedMemes: {
+                    current: null,
+                    past: []
+                },
+                submittedMemes: {
+                    current: null,
+                    past: []
+                },
+                submittedRates: {
+                    current: null,
+                    past: []
+                },
+                recapMemes: {
+                    current: null,
+                    past: [],
+                }
+            })
+        }
+        callback(game.newGameId);
     })
 
     socket.on("session", (sessionId, callback) => {

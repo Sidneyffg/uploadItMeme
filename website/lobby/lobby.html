@@ -33,6 +33,10 @@
                 <input type="password" id="memeGroupPassword" placeholder="Password">
                 <button onclick="addMemeGroup()">comfirm</button>
             </div>
+            <div id="roundInpContainer" style="display: none;">
+                <p>Rounds:</p>
+                <input type="number" id="roundSettingsInp" min="1" max="10" value="3" onchange="roundInpChange()">
+            </div>
             <div class="lobbyId">
                 <div>
                     <h2 id="lobbyId"></h2>

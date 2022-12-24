@@ -28,12 +28,14 @@ function getGameInfo() {
         }
         if (oldGame.leader !== newGame.leader) {
             if (newGame.leader) {
+                document.getElementById("roundInpContainer").style.display = "flex"
                 if (newGame.memeGroupName === undefined) {
                     document.getElementById("memeGroupContainer").style.display = "block"
                 } else {
                     document.getElementById("startGame").style.display = "block"
                 }
             } else {
+                document.getElementById("roundInpContainer").style.display = "none"
                 document.getElementById("startGame").style.display = "none"
                 document.getElementById("memeGroupContainer").style.display = "none"
             }
@@ -69,4 +71,16 @@ function startGame() {
 function copyLobbyId() {
     navigator.clipboard.writeText("localhost:3000/join/" + gameId)
     prompt("Link copied to clipboard!")
+}
+
+function roundInpChange() {
+    let elem = document.getElementById("roundSettingsInp")
+    if (elem.value == "") elem.value = 3;
+    if (elem.value < 1) elem.value = 1;
+    if (elem.value > 10) elem.value = 10;
+    socket.emit("updateGameSettings", sessionId, gameId, { totalRounds: elem.value }, callback => {
+        if (!callback) {
+            console.log("Failed to update settings.")
+        }
+    })
 }

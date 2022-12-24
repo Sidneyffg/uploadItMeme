@@ -81,7 +81,7 @@ function initRecapScreen(users) {
                 </div>
                 <div class="underImageDiv">
                     <h3>${e.name}</h3>
-                    <h3>${e.score} points</h3>
+                    <h3>${e.recapMemes.current.score} points</h3>
                 </div>
             </div>
             `
@@ -117,12 +117,18 @@ function sendMemeRate(score) {
     }
     if (score !== 1) {
       document.getElementById("arrowUp").style.opacity = "50%"
+    } else {
+      document.getElementById("arrowUp").style.opacity = "100%"
     }
     if (score !== 0) {
       document.getElementById("mehButton").style.opacity = "50%"
+    } else {
+      document.getElementById("mehButton").style.opacity = "100%"
     }
     if (score !== -1) {
       document.getElementById("arrowDown").style.opacity = "50%"
+    } else {
+      document.getElementById("arrowDown").style.opacity = "100%"
     }
   })
 }
@@ -181,7 +187,7 @@ function reloadImage(imageId, textAreaContainerId, textAreaId, memeInfo) {
                 <h3 id="${textAreaId}${idx}">${e.text}</h3>
             </div>
         `
-      textAreaContainer.style.fontSize = 35 - Math.max(Math.round(Math.sqrt(e.text.length) * 2.5) - textAreaContainer.offsetWidth / 70, 0) + "px"
+      document.getElementById(`${textAreaId}${idx}`).style.fontSize = 35 - Math.max(Math.round(Math.sqrt(e.text.length) * 2.5) - e.width / 70, 0) + "px"
     }
   })
 }
@@ -239,6 +245,17 @@ function openScreen(screen, openStyle) {
   })
 
   document.getElementById(screen).style.display = openStyle;
+}
+
+function playAgain() {
+  socket.emit("playAgain", sessionId, gameId, username, callback => {
+    if (!callback) {
+      console.log("Failed to play again...");
+      return
+    }
+    window.localStorage.setItem("gameId", callback)
+    window.location.href = "/lobby";
+  })
 }
 
 
